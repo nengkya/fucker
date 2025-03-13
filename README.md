@@ -1,0 +1,2 @@
+# fucker
+django 4
