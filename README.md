@@ -1,2 +1,2 @@
-fix  <input type=radio name=choice id=choice{{forloop.counter}} value=choice.id>  
-into <input type=radio name=choice id=choice{{forloop.counter}} value={{choice.id}}>
+fix  <svg> <input type=radio name=choice id=choice{{forloop.counter}} value=choice.id> </svg>  
+into <svg> <input type=radio name=choice id=choice{{forloop.counter}} value={{choice.id}}> </svg>
