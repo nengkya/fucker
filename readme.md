@@ -1,3 +1,2 @@
-https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Django/skeleton_website  
-  
-Field 'id' expected a number but got 'choice.id'.
+fix  input type=radio name=choice id=choice{{forloop.counter}} value=choice.id>   
+into input type=radio name=choice id=choice{{forloop.counter}} value={{choice.id}}> 
