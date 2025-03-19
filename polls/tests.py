@@ -53,22 +53,39 @@ class QuestionIndexViesTests(TestCase):
         #question with a pub_date in the past are displayed on the index page
         question = create_question(question_text = 'Past question.', days = -30)
         response = self.client.get(reverse('polls:index'))
-        self.assertQuerySetEqual(response.context['latest_question_list'], [question])
+        self.assertQuerySetEqual(response.context['latest_question_list'], [question]) #past questions appear in latest_question_list
 
     def test_future_question(self):
         #question with a pub_date in the future are not displayed on the index page
         question = create_question(question_text = 'Future question.', days = 30)
         response = self.client.get(reverse('polls:index'))
-        self.assertQuerySetEqual(response.context['latest_question_list'], [])
+        self.assertQuerySetEqual(response.context['latest_question_list'], []) #future questions do not appear in latest_question_list
 
-      
-
-
-
-
-
-
-
-
+    def test_two_past_questions(self):
+        question1 = create_question(question_text = 'Past question .', days = -30)
+        question2 = create_question(question_text = 'Past question 2.', days = - 5)
+        response = self.client.get(reverse('polls:index'))
+        #question2 first sequence because days -5 is the 'latest_question_list'
+        #assertQuerySetEqual is specifically designed for comparing Django QuerySet objects
+        self.assertQuerySetEqual(response.context['latest_question_list'], [question2, question1])
 
 
+class QuestionDetailViewTest(TestCase):
+    def test_future_question(self):
+        #the detail view of a question with a pub_date in the future returns a 404 not found
+        future_question = create_question(question_text = 'future question', days = 5)
+        #"polls:detail/<int:pk>/"
+        url = reverse('polls:detail', args = (future_question.id, ))
+        response = self.client.get(url)
+        #unittest.TestCase
+        #self.assertEqual(2 + 2, 4)  passes
+        #self.assertEqual("hello", "hello")  passes
+        #self.assertEqual([1, 2, 3], [1, 2, 3])  passes
+        self.assertEqual(response.status_code, 404)
+
+    def test_past_question(self):
+        #the detail view of a question with a pub_date in the past displays the question's text
+        past_question = create_question(question_text = 'past question', days = -5)
+        url = reverse('polls:detail', args = (past_question.id, ))
+        response = self.client.get(url)
+        self.assertContains(response, past_question.question_text)         
